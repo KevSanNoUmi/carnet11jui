@@ -1,5 +1,5 @@
 // Service worker — offline app shell for Carnet Japon 2026
-const CACHE = 'carnet-japon-2026-v37';
+const CACHE = 'carnet-japon-2026-v38';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {
