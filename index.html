@@ -301,8 +301,6 @@ svg .hit { cursor:pointer; }
 <circle class="ping" style="animation-delay:4.1s" cx="548" cy="255" r="7" fill="none" stroke="#9FCBFF"/>
 <circle cx="540" cy="260" r="6" fill="#9FCBFF" stroke="#7EE6BE" stroke-width="2"/>
 <text x="550" y="256" font-size="12" fill="#F3EDE4" stroke="#0F2540" stroke-width="3" paint-order="stroke">Tokyo · HND</text>
-<circle cx="584" cy="242" r="3.5" fill="none" stroke="#7EE6BE" stroke-width="1.5"/>
-<text x="584" y="228" text-anchor="middle" font-size="12" fill="#E8ECF5" stroke="#0F2540" stroke-width="3" paint-order="stroke">Kashima · 4/12</text>
 <circle cx="548" cy="255" r="16" fill="transparent"/>
 </g>
 </svg>
@@ -957,28 +955,6 @@ const POI_BY_ID = {};
 DATA.forEach(d=>d.pois.forEach(p=>{ POI_BY_ID[p.id]=p; }));
 function openPoi(id){ const p=POI_BY_ID[id]; if(p && p.u) window.open(p.u,'_blank','noopener'); }
 const CAT_COLOR = {'🎣 Pêche':'#58A0FF','🍜 Restaurants':'#D9A441','☕ Cafés':'#C6432E','⛩️ Balades':'#5DD9A8','🛍️ Shopping':'#B48EE0','📍 Lieux UF':'#58A0FF'};
-function cloudMapSVG(items, catLabel){
-  const pts = items.filter(p=>p.lat!=null);
-  if(pts.length<2) return '';
-  const lats=pts.map(p=>p.lat), lngs=pts.map(p=>p.lng);
-  const minLa=Math.min(...lats), maxLa=Math.max(...lats), minLo=Math.min(...lngs), maxLo=Math.max(...lngs);
-  const W=320,H=130,PAD=16;
-  const spanLa=Math.max(maxLa-minLa,0.002), spanLo=Math.max(maxLo-minLo,0.002);
-  const color = CAT_COLOR[catLabel]||'#8FC0FF';
-  const dots = pts.map(p=>{
-    const x = PAD + ((p.lng-minLo)/spanLo)*(W-2*PAD);
-    const y = H-PAD - ((p.lat-minLa)/spanLa)*(H-2*PAD);
-    const done = state.checks[p.id];
-    return `<circle class="cdot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="${done?'var(--mut)':color}" stroke="#0F2540" stroke-width="1.4" onclick="openPoi('${p.id}')"><title>${esc(p.t)}</title></circle>`;
-  }).join('');
-  const avgLa = lats.reduce((a,b)=>a+b,0)/lats.length;
-  const avgLo = lngs.reduce((a,b)=>a+b,0)/lngs.length;
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${avgLa.toFixed(5)},${avgLo.toFixed(5)}`;
-  return `<div class="cloudmap"><svg viewBox="0 0 ${W} ${H}">
-    <rect width="${W}" height="${H}" fill="#16223E"/>
-    ${dots}
-  </svg><div class="cmfoot"><span>${pts.length} spot${pts.length>1?'s':''} localisé${pts.length>1?'s':''}</span><a href="${mapsUrl}" target="_blank" rel="noopener">📍 Ouvrir la zone dans Maps</a></div></div>`;
-}
 function editNote(id){ const v=prompt('Ta note perso :',state.notes[id]||''); if(v!==null){ state.notes[id]=v.trim(); scheduleSave(); render(); } }
 function ta(code,key,rows,ph){ return `<textarea rows="${rows}" placeholder="${ph}" oninput="setf('${code}','${key}',this.value)">${esc(fval(code,key))}</textarea>`; }
 function taqRow(t,i){
@@ -1097,7 +1073,7 @@ function poiSections(d, cats, far){
   return cats.filter(c=>items.some(p=>p.c===c)).map(c=>{
     const it=items.filter(p=>p.c===c);
     const done=it.filter(p=>state.checks[p.id]).length;
-    let body=cloudMapSVG(it, c);
+    let body='';
     if(c==='🍜 Restaurants'){
       const subs=[...new Set(it.map(p=>p.sc||'🍽️ À découvrir'))].sort();
       body+=subs.map(s=>`<div class="subh">${esc(s)}</div>`+it.filter(p=>(p.sc||'🍽️ À découvrir')===s).map(poiRow).join('')).join('');
@@ -1194,7 +1170,6 @@ function renderDest(){
       </div>
       <div class="card">
         <div class="sec">🎣 Spots de pêche <span class="cnt">${peche.filter(p=>state.checks[p.id]).length}/${peche.length}</span></div>
-        ${cloudMapSVG(peche, '🎣 Pêche')}
         ${peche.length?peche.map(poiRow).join(''):'<div class="empty">Aucun spot enregistré ici</div>'}
         <label class="f">Espèces visées</label>${ta(d.code,'especes',2,'aori, hirame, seabass...')}
       </div>
