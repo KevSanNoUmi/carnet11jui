@@ -32,9 +32,8 @@ main { padding:0 14px; max-width:760px; margin:0 auto; }
 .dates { color:var(--gold); font-size:13px; margin:6px 0 8px; font-weight:600; }
 .brief { font-size:13.5px; line-height:1.5; margin:6px 0; }
 .sec { background:linear-gradient(135deg, #E8C46E 0%, #C99A42 100%); color:#2A1E0A; margin:14px -14px 10px -14px; padding:8px 14px; font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; display:flex; justify-content:space-between; align-items:center; box-shadow:0 3px 10px -3px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.35); }
-.sec .cnt { color:#2A1E0A; opacity:.7; font-weight:600; text-transform:none; letter-spacing:0; }
+.sec .cnt { color:#000; opacity:1; font-weight:700; text-transform:none; letter-spacing:0; }
 .card { overflow:hidden; }
-.sec .cnt { font-weight:400; font-size:12px; text-transform:none; color:var(--mut); }
 label.f { display:block; font-size:11px; color:var(--mut); letter-spacing:.06em; text-transform:uppercase; margin:12px 0 4px; }
 textarea, input.f, select.f { width:100%; background:var(--panel2); border:1px solid var(--line); border-radius:8px; color:var(--txt); padding:9px 10px; font-size:14px; font-family:inherit; outline:none; resize:vertical; }
 .hotellink { display:inline-block; margin-top:7px; color:var(--green); font-size:13.5px; text-decoration:none; font-weight:600; }
@@ -1121,7 +1120,7 @@ function renderDest(){
       </div>
       <button class="nbtn" style="font-size:13px;color:var(--mut)" onclick="addStep(${dayIdx})">+ ajouter une étape</button>
     </div>
-    <div class="card">${listBlock('spec:'+d.code,'Spécialité de saison',SPECIALITES[d.code]||[],'Ajouter un plat...')}</div>`:''}
+    <div class="card">${listBlock('spec:'+d.code,'🍽️ Spécialité de saison',SPECIALITES[d.code]||[],'Ajouter un plat...')}</div>`:''}
     ${pro?`<div class="card">
       <div class="sec">🎬 Brief tournage</div>
       ${ta(d.code,'brieft',5,'Objectif, programme J1/J2, produits, livrables...')}
@@ -1165,7 +1164,7 @@ function renderDest(){
     ${taqs.length?`<div class="card"><div class="sec">📦 Ta-Q-Bin <span class="cnt">synchronisé</span></div>${taqs.map(x=>taqRow(x.t,x.i)).join('')}</div>`:''}
     ${d.code!=='HORS'?`
       <div class="card">
-        <div class="sec">${pro?'Temps libre — à moins d’1h':'Checklists — à moins d’1h'}</div>
+        <div class="sec">${pro?'🧭 Temps libre — à moins d’1h':'✅ Checklists — à moins d’1h'}</div>
         ${poiSections(d, pro?proCats:vacCats, false)||'<div class="empty">Rien à proximité</div>'}
         ${farItems.filter(p=>p.c!=='🎣 Pêche').length?`<details class="far"><summary>🚉 Plus loin (>1h) — ${farItems.filter(p=>p.c!=='🎣 Pêche').length} lieux</summary>${poiSections({pois:farItems}, pro?proCats:vacCats, true)}</details>`:''}
       </div>
